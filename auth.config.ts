@@ -9,9 +9,12 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isLoginPage = nextUrl.pathname === "/login";
+      const path = nextUrl.pathname;
 
-      if (isLoginPage) {
+      // Never block NextAuth's own API routes
+      if (path.startsWith("/api/auth/")) return true;
+
+      if (path === "/login" || path === "/register" || path === "/forgot-password" || path.startsWith("/reset-password")) {
         if (isLoggedIn) return Response.redirect(new URL("/dashboard", nextUrl));
         return true;
       }

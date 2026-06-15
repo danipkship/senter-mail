@@ -27,41 +27,46 @@ export function LoginForm({ light = false }: { light?: boolean }) {
     const email    = form.get("email") as string;
     const password = form.get("password") as string;
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (!result?.error) {
-      router.push("/dashboard");
-      router.refresh();
-      return;
-    }
+      if (!result?.error) {
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
 
-    // NextAuth v5 passes custom CredentialsSignin.code via result.code
-    const code = result.code ?? "";
+      // NextAuth v5 passes custom CredentialsSignin.code via result.code
+      const code = result.code ?? "";
 
-    if (code === "EMAIL_NOT_VERIFIED") {
-      setInfoMsg("Please verify your email before signing in. Check your inbox for a verification link.");
+      if (code === "EMAIL_NOT_VERIFIED") {
+        setInfoMsg("Please verify your email before signing in. Check your inbox for a verification link.");
+        setLoading(false);
+        return;
+      }
+
+      if (code.startsWith("TWO_FACTOR_REQUIRED:")) {
+        const challengeToken = code.replace("TWO_FACTOR_REQUIRED:", "");
+        router.push(`/login/2fa?challenge=${encodeURIComponent(challengeToken)}&email=${encodeURIComponent(email)}`);
+        return;
+      }
+
+      if (code === "INVALID_2FA_CODE") {
+        setError("Invalid two-factor code. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      setError("Invalid email or password. Please try again.");
+    } catch {
+      setError("Connection error. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    if (code.startsWith("TWO_FACTOR_REQUIRED:")) {
-      const challengeToken = code.replace("TWO_FACTOR_REQUIRED:", "");
-      router.push(`/login/2fa?challenge=${encodeURIComponent(challengeToken)}&email=${encodeURIComponent(email)}`);
-      return;
-    }
-
-    if (code === "INVALID_2FA_CODE") {
-      setError("Invalid two-factor code. Please try again.");
-      setLoading(false);
-      return;
-    }
-
-    setError("Invalid email or password. Please try again.");
-    setLoading(false);
   }
 
   const labelClass = light ? "text-slate-700 text-sm font-medium" : "text-slate-300 text-sm font-medium";
