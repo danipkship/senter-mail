@@ -62,8 +62,9 @@ export function LoginForm({ light = false }: { light?: boolean }) {
       }
 
       setError("Invalid email or password. Please try again.");
-    } catch {
-      setError("Connection error. Please try again.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg || "Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
