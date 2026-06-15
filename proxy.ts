@@ -44,8 +44,7 @@ export const config = {
     "/customers/:path*",
     "/notifications/:path*",
     "/settings/:path*",
-    "/api/auth/:path*",
     "/api/register",
-    "/api/:path*",
+    "/api/((?!auth/).*)",
   ],
 };
