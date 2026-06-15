@@ -1,0 +1,66 @@
+// Plan config only — no Stripe import, safe for client components
+
+export const PLANS = {
+  STARTER: {
+    name: "Starter",
+    monthlyPriceId: process.env.STRIPE_STARTER_PRICE_ID!,
+    annualPriceId:  process.env.STRIPE_STARTER_ANNUAL_PRICE_ID!,
+    monthlyPrice: 9.99,
+    annualPrice:  7.99,
+    annualTotal:  95.88,
+    customers: 20,
+    sms: false,
+    trial: 0,
+    description: "Perfect for small mailbox centers getting started.",
+    features: [
+      "Up to 20 customers",
+      "Unlimited email notifications",
+      "Customer management & profiles",
+      "Notification history",
+      "Renewal reminders",
+    ],
+  },
+  PRO: {
+    name: "Pro",
+    monthlyPriceId: process.env.STRIPE_PRO_PRICE_ID!,
+    annualPriceId:  process.env.STRIPE_PRO_ANNUAL_PRICE_ID!,
+    monthlyPrice: 24.99,
+    annualPrice:  19.99,
+    annualTotal:  239.88,
+    customers: 50,
+    sms: true,
+    trial: 30,
+    description: "For growing stores that need SMS reach.",
+    features: [
+      "Up to 50 customers",
+      "Unlimited email notifications",
+      "SMS notifications included",
+      "Customer management & profiles",
+      "Notification history",
+      "Renewal reminders",
+    ],
+  },
+  BUSINESS: {
+    name: "Business",
+    monthlyPriceId: process.env.STRIPE_BUSINESS_PRICE_ID!,
+    annualPriceId:  process.env.STRIPE_BUSINESS_ANNUAL_PRICE_ID!,
+    monthlyPrice: 45.99,
+    annualPrice:  36.99,
+    annualTotal:  443.88,
+    customers: Infinity,
+    sms: true,
+    trial: 0,
+    description: "For established centers with no limits.",
+    features: [
+      "Unlimited customers",
+      "Unlimited email notifications",
+      "SMS notifications included",
+      "Customer management & profiles",
+      "Notification history",
+      "Renewal reminders",
+      "Priority support",
+    ],
+  },
+} as const;
+
+export type PlanKey = keyof typeof PLANS;

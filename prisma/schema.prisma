@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  OWNER
+  MANAGER
+  EMPLOYEE
+}
+
+enum CustomerStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PENDING
+}
+
+enum NotificationType {
+  MAIL
+  PACKAGE
+  GENERAL
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum PlanType {
+  STARTER
+  PRO
+  BUSINESS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELLED
+  UNPAID
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model Store {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plan                 PlanType           @default(STARTER)
+  subscriptionStatus   SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  currentPeriodEnd     DateTime?
+
+  users         User[]
+  customers     Customer[]
+  notifications Notification[]
+  templates     NotificationTemplate[]
+  settings      StoreSettings?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      UserRole @default(EMPLOYEE)
+  storeId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Email verification
+  emailVerified DateTime?
+
+  // Two-factor authentication
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String?
+  backupCodes      String[]
+
+  store             Store                  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  sentNotifications Notification[]
+  loginLogs          LoginLog[]
+  verificationToken  EmailVerificationToken?
+  twoFactorChallenge TwoFactorChallenge?
+  passwordResetToken PasswordResetToken?
+}
+
+model LoginLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  email     String
+  success   Boolean
+  ip        String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TwoFactorChallenge {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RevokedSession {
+  id        String   @id @default(cuid())
+  jti       String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([jti])
+  @@index([expiresAt])
+}
+
+model Customer {
+  id            String         @id @default(cuid())
+  storeId       String
+  firstName     String
+  lastName      String
+  companyName   String?
+  mailboxNumber String
+  address1      String?
+  address2      String?
+  city          String?
+  state         String?
+  zip           String?
+  country       String         @default("US")
+  phone         String?
+  email         String?
+  startDate     DateTime
+  endDate       DateTime?
+  status        CustomerStatus @default(ACTIVE)
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  store         Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+}
+
+model Notification {
+  id         String              @id @default(cuid())
+  storeId    String
+  customerId String
+  sentById   String
+  type       NotificationType
+  channel    NotificationChannel
+  subject    String?
+  message    String
+  status     NotificationStatus  @default(PENDING)
+  sentAt     DateTime?
+  createdAt  DateTime            @default(now())
+
+  store    Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  sentBy   User     @relation(fields: [sentById], references: [id])
+}
+
+model NotificationTemplate {
+  id        String              @id @default(cuid())
+  storeId   String
+  name      String
+  type      NotificationType
+  channel   NotificationChannel
+  subject   String?
+  body      String
+  isDefault Boolean             @default(false)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model StoreSettings {
+  id            String   @id @default(cuid())
+  storeId       String   @unique
+  senderName    String?
+  senderEmail   String?
+  senderPhone   String?
+  emailProvider String?
+  smsProvider   String?
+  updatedAt     DateTime @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
