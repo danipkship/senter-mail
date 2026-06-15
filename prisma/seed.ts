@@ -34,6 +34,7 @@ async function main() {
       password: hashedPassword,
       role: "OWNER",
       storeId: store.id,
+      emailVerified: new Date(),
     },
   });
 
