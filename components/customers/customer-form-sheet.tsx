@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, MessageSquare } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -84,7 +84,7 @@ export function CustomerFormSheet({
     formState: { errors, isSubmitting },
   } = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
-    defaultValues: { country: "US", status: "ACTIVE" },
+    defaultValues: { country: "US", status: "ACTIVE", preferredContact: undefined },
   });
 
   useEffect(() => {
@@ -108,6 +108,7 @@ export function CustomerFormSheet({
             ? customer.endDate.toISOString().split("T")[0]
             : "",
           status: customer.status,
+          preferredContact: (customer.preferredContact as "EMAIL" | "SMS") ?? undefined,
           notes: customer.notes ?? "",
         });
       } else {
@@ -122,6 +123,7 @@ export function CustomerFormSheet({
   }
 
   const statusValue = watch("status");
+  const preferredContact = watch("preferredContact");
 
   const inputCls = "h-9 border-slate-200 focus-visible:ring-blue-400 rounded-sm text-sm";
 
@@ -191,6 +193,42 @@ export function CustomerFormSheet({
                     />
                   </Field>
                 </div>
+
+                {/* Preferred contact method */}
+                <Field label="Preferred Contact">
+                  <div className="flex gap-2">
+                    {(["EMAIL", "SMS"] as const).map((ch) => {
+                      const Icon = ch === "EMAIL" ? Mail : MessageSquare;
+                      const active = preferredContact === ch;
+                      return (
+                        <button
+                          key={ch}
+                          type="button"
+                          onClick={() =>
+                            setValue("preferredContact", active ? undefined : ch, { shouldDirty: true })
+                          }
+                          className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-sm font-medium transition-all ${
+                            active
+                              ? "bg-blue-600 border-blue-600 text-white"
+                              : "bg-white border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-600"
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          {ch === "EMAIL" ? "Email" : "SMS"}
+                        </button>
+                      );
+                    })}
+                    {preferredContact && (
+                      <button
+                        type="button"
+                        onClick={() => setValue("preferredContact", undefined, { shouldDirty: true })}
+                        className="px-3 py-2 rounded-sm border border-slate-200 text-xs text-slate-400 hover:text-slate-600 hover:border-slate-300 transition-all"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </Field>
               </div>
             </section>
 

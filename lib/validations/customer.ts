@@ -21,6 +21,7 @@ export const customerSchema = z.object({
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().optional(),
   status: z.enum(["ACTIVE", "CANCELLED", "EXPIRED", "PENDING"]),
+  preferredContact: z.enum(["EMAIL", "SMS"]).optional(),
   notes: z.string().optional(),
 });
 

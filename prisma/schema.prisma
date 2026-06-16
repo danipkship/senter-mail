@@ -168,12 +168,13 @@ model Customer {
   state         String?
   zip           String?
   country       String         @default("US")
-  phone         String?
-  email         String?
-  startDate     DateTime
-  endDate       DateTime?
-  status        CustomerStatus @default(ACTIVE)
-  notes         String?
+  phone            String?
+  email            String?
+  preferredContact NotificationChannel?
+  startDate        DateTime
+  endDate          DateTime?
+  status           CustomerStatus @default(ACTIVE)
+  notes            String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
