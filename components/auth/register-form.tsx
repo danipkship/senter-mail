@@ -29,7 +29,7 @@ export function RegisterForm() {
       storeName: form.get("storeName") as string,
       email: form.get("email") as string,
       password: form.get("password") as string,
-      plan: planParam,
+      plan: planParam.toLowerCase(),
       billing: billingParam,
     };
 
