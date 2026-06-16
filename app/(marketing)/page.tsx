@@ -10,7 +10,7 @@ const FEATURES = [
     color: "#4361EE",
     bg: "#EEF1FD",
     title: "Mail & Package Alerts",
-    desc: "Notify customers the moment their mail or package arrives — via email or SMS.",
+    desc: "Notify customers the moment their mail or package arrives — via email or SMS, instantly.",
   },
   {
     icon: Users,
@@ -41,25 +41,21 @@ export default function LandingPage() {
       <ScrollVideoHero />
 
       {/* ── Features ─────────────────────────────────────────────────────────── */}
-      <section
-        className="py-16 overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #ffffff 0%, #f5f7ff 50%, #eef1fd 100%)" }}
-      >
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
 
           {/* Header */}
-          <div className="text-center mb-8">
-            <span className="inline-block text-xs font-bold tracking-widest text-[#4361EE] uppercase bg-blue-50 border border-blue-100 px-4 py-1.5 rounded-full mb-5">
-              Built for mailbox centers
-            </span>
-            <h2 className="text-4xl font-bold text-[#0D1B4B]">Everything your store needs</h2>
-            <p className="text-slate-500 mt-4 text-base max-w-lg mx-auto leading-relaxed">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-[#0D1B4B] tracking-tight mb-4">
+              Everything your store needs
+            </h2>
+            <p className="text-slate-400 text-base max-w-md mx-auto leading-relaxed">
               One platform to manage customers, send notifications, and never miss a renewal.
             </p>
           </div>
 
-          {/* Floating screenshot — centered showcase */}
-          <div className="flex justify-center mb-4">
+          {/* Dashboard preview */}
+          <div className="flex justify-center mb-16">
             <Image
               src="/para%20landing.png"
               alt="Dashboard overview"
@@ -74,20 +70,20 @@ export default function LandingPage() {
           </div>
 
           {/* Feature cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+                className="group bg-white border border-slate-100 rounded-2xl p-6 hover:border-blue-100 hover:shadow-md transition-all duration-200"
               >
                 <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-5"
                   style={{ background: f.bg }}
                 >
-                  <f.icon className="w-6 h-6" style={{ color: f.color }} />
+                  <f.icon className="w-5 h-5" style={{ color: f.color }} />
                 </div>
-                <h3 className="font-bold text-slate-900 mb-2">{f.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
+                <h3 className="font-bold text-slate-800 mb-2 text-sm">{f.title}</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -99,15 +95,17 @@ export default function LandingPage() {
       <PricingSection />
 
       {/* ── CTA ──────────────────────────────────────────────────────────────── */}
-      <section className="py-20 bg-[#0D1B4B]">
+      <section className="py-24 bg-[#0D1B4B]">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to modernize your mailbox center?</h2>
-          <p className="text-slate-400 mb-8">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to modernize your mailbox center?
+          </h2>
+          <p className="text-slate-400 mb-10 leading-relaxed">
             Join mailbox centers already using SENTER MAIL to manage customers and send instant notifications.
           </p>
           <Link
             href="/register?plan=pro"
-            className="bg-[#4361EE] hover:bg-[#5272f0] text-white font-semibold px-8 py-4 rounded-lg transition-colors shadow-lg text-sm inline-block"
+            className="inline-block bg-[#4361EE] hover:bg-[#5272f0] text-white font-semibold px-8 py-4 rounded-xl transition-colors shadow-lg shadow-blue-900/30 text-sm"
           >
             Start your 30-day free trial →
           </Link>
@@ -118,8 +116,8 @@ export default function LandingPage() {
       <footer className="border-t border-slate-100 py-8">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Image src="/2.png" alt="SENTER MAIL" width={24} height={24} />
-            <span className="text-sm text-slate-500">© 2026 SENTER MAIL. All rights reserved.</span>
+            <Image src="/2.png" alt="SENTER MAIL" width={22} height={22} />
+            <span className="text-sm text-slate-400">© 2026 SENTER MAIL. All rights reserved.</span>
           </div>
           <div className="flex gap-6 text-sm text-slate-400">
             <Link href="/login" className="hover:text-slate-600 transition-colors">Sign in</Link>

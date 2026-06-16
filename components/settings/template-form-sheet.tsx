@@ -127,7 +127,7 @@ export function TemplateFormSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-2xl overflow-y-auto"
+        className="w-full sm:max-w-xl overflow-y-auto overflow-x-hidden flex flex-col"
       >
         <SheetHeader className="pb-4 border-b border-slate-100 mb-6">
           <SheetTitle className="text-lg font-bold text-slate-900">
@@ -142,8 +142,8 @@ export function TemplateFormSheet({
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Name + Type + Channel row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="sm:col-span-1 space-y-1.5">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2 space-y-1.5">
               <Label className="text-sm font-medium text-slate-700">
                 Template Name <span className="text-red-500">*</span>
               </Label>
@@ -215,17 +215,17 @@ export function TemplateFormSheet({
           )}
 
           {/* Variables */}
-          <div className="space-y-2">
+          <div className="space-y-2 min-w-0">
             <Label className="text-sm font-medium text-slate-700">
               Insert Variable
             </Label>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 min-w-0">
               {TEMPLATE_VARIABLES.map((v) => (
                 <button
                   key={v.key}
                   type="button"
                   onClick={() => insertVariable(v.key)}
-                  className="px-2 py-1 text-xs font-mono bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-md transition-colors"
+                  className="px-2 py-1 text-xs font-mono bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-md transition-colors shrink-0"
                 >
                   {v.key}
                 </button>

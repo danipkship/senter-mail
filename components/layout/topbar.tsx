@@ -13,7 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAvatar } from "@/lib/hooks/use-avatar";
 
 interface TopBarUser {
   name: string;
@@ -24,6 +25,7 @@ interface TopBarUser {
 
 export function TopBar({ user }: { user: TopBarUser }) {
   const router = useRouter();
+  const { avatarUrl } = useAvatar();
 
   return (
     <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-blue-100 flex-shrink-0">
@@ -54,6 +56,7 @@ export function TopBar({ user }: { user: TopBarUser }) {
               className="rounded-full hover:bg-blue-50"
             >
               <Avatar className="w-8 h-8">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt="Profile" />}
                 <AvatarFallback className="bg-[#4361EE] text-white text-xs font-bold">
                   {user.initials}
                 </AvatarFallback>

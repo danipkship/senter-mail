@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAvatar, fileToAvatarDataUrl } from "@/lib/hooks/use-avatar";
 
 const accountSchema = z.object({
   displayName: z.string().min(1, "Name is required"),
@@ -21,11 +22,10 @@ const INITIAL = {
   displayName: "Daniel Cruz",
   email: "owner@mainstreetmailbox.com",
   notificationSenderName: "Main Street Mailbox",
-  avatarUrl: null as string | null,
 };
 
 export function AccountForm() {
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(INITIAL.avatarUrl);
+  const { avatarUrl, saveAvatar } = useAvatar();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -44,12 +44,16 @@ export function AccountForm() {
     fileRef.current?.click();
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAvatarUrl(url);
-    toast.success("Photo updated");
+    try {
+      const dataUrl = await fileToAvatarDataUrl(file);
+      saveAvatar(dataUrl);
+      toast.success("Photo updated — visible everywhere");
+    } catch {
+      toast.error("Failed to process image");
+    }
   }
 
   async function onSubmit(data: AccountFormData) {

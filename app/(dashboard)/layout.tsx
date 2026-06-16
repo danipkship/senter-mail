@@ -34,11 +34,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-full">
+      <GridBackground />
       <Sidebar user={user} expiringCount={expiringCount} />
       <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
         <TopBar user={user} />
-        <main className="flex-1 overflow-y-auto p-6 relative">
-          <GridBackground />
+        <main className="flex-1 overflow-y-auto p-6">
           {children}
         </main>
       </div>
