@@ -36,6 +36,7 @@ interface SendNotificationDialogProps {
     mailboxNumber: string;
     email: string | null;
     phone: string | null;
+    preferredContact?: "EMAIL" | "SMS" | null;
   };
   templates: NotificationTemplate[];
   storeName?: string;
@@ -102,13 +103,16 @@ export function SendNotificationDialog({
     }
   }
 
-  // Reset on close
+  // Reset on open — prefer customer's saved preferredContact, else fallback to availability
   useEffect(() => {
     if (!open) return;
-    const preferredChannel: NotificationChannel = hasPhone ? "SMS" : hasEmail ? "EMAIL" : "SMS";
+    const preferredChannel: NotificationChannel =
+      customer.preferredContact === "EMAIL" && hasEmail ? "EMAIL" :
+      customer.preferredContact === "SMS" && hasPhone ? "SMS" :
+      hasPhone ? "SMS" : hasEmail ? "EMAIL" : "SMS";
     setChannel(preferredChannel);
     setType("MAIL");
-  }, [open, hasPhone, hasEmail]);
+  }, [open, hasPhone, hasEmail, customer.preferredContact]);
 
   async function handleSend() {
     if (!body.trim()) {

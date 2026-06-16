@@ -251,12 +251,21 @@ export function CustomersClient({
 
                       {/* Contact */}
                       <td className="px-4 py-3 hidden md:table-cell">
-                        <div className="min-w-0">
+                        <div className="min-w-0 space-y-0.5">
                           {customer.email && (
                             <p className="text-xs text-slate-600 truncate">{customer.email}</p>
                           )}
                           {customer.phone && (
                             <p className="text-xs text-slate-400 truncate">{customer.phone}</p>
+                          )}
+                          {customer.preferredContact && (
+                            <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                              customer.preferredContact === "EMAIL"
+                                ? "bg-blue-50 text-blue-600"
+                                : "bg-emerald-50 text-emerald-600"
+                            }`}>
+                              {customer.preferredContact === "EMAIL" ? "✉ Email" : "💬 SMS"}
+                            </span>
                           )}
                         </div>
                       </td>
