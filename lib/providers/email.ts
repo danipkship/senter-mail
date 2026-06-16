@@ -38,8 +38,15 @@ export async function sendEmail(
       html: bodyToHtml(body),
     });
     return { success: true };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown SendGrid error";
+  } catch (err: unknown) {
+    let message = "Unknown SendGrid error";
+    if (err instanceof Error) {
+      message = err.message;
+      const response = (err as unknown as { response?: { body?: { errors?: { message: string }[] } } }).response;
+      if (response?.body?.errors?.length) {
+        message = response.body.errors.map((e) => e.message).join(", ");
+      }
+    }
     console.error("[SendGrid email error]", message);
     return { success: false, error: message };
   }
