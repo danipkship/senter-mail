@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { stripe, PLANS, PlanKey } from "@/lib/stripe";
 import { createAndSendVerificationEmail } from "@/lib/email-verification";
+import { getAppUrl } from "@/lib/app-url";
 
 const registerSchema = z.object({
   storeName: z.string().min(2, "Store name must be at least 2 characters").max(100).trim(),
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
     include: { users: { select: { id: true } } },
   });
 
-  const appUrl = process.env.AUTH_URL ?? "http://localhost:3001";
+  const appUrl = getAppUrl();
   const trialDays = selectedPlan.trial > 0 ? selectedPlan.trial : undefined;
 
   const session = await stripe.checkout.sessions.create({

@@ -13,7 +13,8 @@ function bodyToHtml(text: string): string {
 export async function sendEmail(
   to: string,
   subject: string,
-  body: string
+  body: string,
+  html?: string
 ): Promise<ProviderResult> {
   const apiKey = process.env.SENDGRID_API_KEY;
   const fromEmail = process.env.SENDGRID_FROM_EMAIL;
@@ -35,7 +36,7 @@ export async function sendEmail(
       from: { email: fromEmail, name: fromName },
       subject,
       text: body,
-      html: bodyToHtml(body),
+      html: html ?? bodyToHtml(body),
     });
     return { success: true };
   } catch (err: unknown) {

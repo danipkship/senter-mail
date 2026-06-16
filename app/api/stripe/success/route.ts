@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { getAppUrl } from "@/lib/app-url";
 
 export async function GET(req: NextRequest) {
-  const appUrl = process.env.AUTH_URL ?? "http://localhost:3001";
+  const appUrl = getAppUrl();
   const sessionId = new URL(req.url).searchParams.get("session_id");
 
   if (!sessionId) {
