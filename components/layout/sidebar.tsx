@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAvatar } from "@/lib/hooks/use-avatar";
@@ -33,9 +34,29 @@ interface SidebarProps {
   expiringCount?: number;
 }
 
+const SEEN_KEY = "customersBadgeSeenCount";
+
 export function Sidebar({ user, expiringCount = 0 }: SidebarProps) {
   const pathname = usePathname();
   const { avatarUrl } = useAvatar();
+  const [seenCount, setSeenCount] = useState<number | null>(null);
+
+  // Load seen count from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(SEEN_KEY);
+    setSeenCount(stored !== null ? Number(stored) : null);
+  }, []);
+
+  // When user visits /customers, mark current count as seen
+  useEffect(() => {
+    if (pathname.startsWith("/customers")) {
+      localStorage.setItem(SEEN_KEY, String(expiringCount));
+      setSeenCount(expiringCount);
+    }
+  }, [pathname, expiringCount]);
+
+  // Show badge only if there are expiring customers and count changed since last seen
+  const showBadge = expiringCount > 0 && seenCount !== expiringCount;
 
   function isActive(href: string, exact: boolean) {
     if (exact) return pathname === href;
@@ -91,7 +112,7 @@ export function Sidebar({ user, expiringCount = 0 }: SidebarProps) {
                 )}
                 <Icon className="w-5 h-5 flex-shrink-0 relative z-10" />
                 <span className="relative z-10 flex-1">{item.label}</span>
-                {item.href === "/customers" && expiringCount > 0 && !pathname.startsWith("/customers") && (
+                {item.href === "/customers" && showBadge && (
                   <span className="relative z-10 flex-shrink-0 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold bg-amber-400 text-white rounded-full px-1">
                     {expiringCount}
                   </span>
