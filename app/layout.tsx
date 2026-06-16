@@ -13,6 +13,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "SENTER MAIL | Mailbox CRM",
   description: "Professional CRM for mailbox center stores",
+  icons: {
+    icon: "/2.png",
+    shortcut: "/2.png",
+    apple: "/2.png",
+  },
 };
 
 export default function RootLayout({
